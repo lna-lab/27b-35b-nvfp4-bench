@@ -11,10 +11,10 @@ plt.style.use("seaborn-v0_8-whitegrid")
 
 COLORS = {"qwen": "#1E88E5", "qwopus": "#8E24AA", "gemma31": "#43A047", "gemma31_lyf": "#78909C"}
 LABELS = {
-    "qwen": "Qwen3.5-27B (Lna-Lab+TQ)",
-    "qwopus": "Qwopus-27B (Lna-Lab+TQ)",
-    "gemma31": "Gemma4-31B (Lna-Lab+TQ)",
-    "gemma31_lyf": "Gemma4-31B (lyf, baseline)",
+    "qwen": "Qwen3.5-27B (Lna-Lab)",
+    "qwopus": "Qwopus-27B (Lna-Lab)",
+    "gemma31": "Gemma4-31B (Lna-Lab)",
+    "gemma31_lyf": "Gemma4-31B (lyf)",
 }
 
 with open("data.json") as f:
