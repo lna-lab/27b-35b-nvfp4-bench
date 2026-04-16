@@ -1,0 +1,121 @@
+# ============================================================================
+# Dense NVFP4 Benchmark — 4-model simultaneous deployment
+# GPU 0: Huihui Qwen3.5-27B (Lna-Lab, TQ-ready)     port 8016
+# GPU 1: Huihui Qwopus3.5-27B (Lna-Lab, TQ-ready)   port 8017
+# GPU 2: Huihui Gemma4-31B (Lna-Lab, TQ-ready)       port 8018
+# GPU 3: lyf Gemma4-31B (community, no-TQ baseline)  port 8019
+# ============================================================================
+
+services:
+
+  bench-qwen:
+    image: lna-lab/gemma4-inference:latest
+    container_name: bench-qwen
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=0
+      - MODEL_PATH=/models/current
+      - PORT=8016
+      - MAX_MODEL_LEN=8192
+      - MAX_NUM_SEQS=8
+      - GPU_MEMORY_UTILIZATION=0.90
+      - TENSOR_PARALLEL_SIZE=1
+      - QUANTIZATION=auto
+      - VLLM_CUDA_GRAPH_MODE=piecewise
+      - TRINITY_TURBO_ENABLED=0
+    volumes:
+      - /media/tonoken/Optane_DATA/Models/huihui-ai/Huihui-Qwen3.5-27B-abliterated-NVFP4:/models/current:ro
+    ports:
+      - "8016:8016"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+    shm_size: '16gb'
+
+  bench-qwopus:
+    image: lna-lab/gemma4-inference:latest
+    container_name: bench-qwopus
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=1
+      - MODEL_PATH=/models/current
+      - PORT=8017
+      - MAX_MODEL_LEN=8192
+      - MAX_NUM_SEQS=8
+      - GPU_MEMORY_UTILIZATION=0.90
+      - TENSOR_PARALLEL_SIZE=1
+      - QUANTIZATION=auto
+      - VLLM_CUDA_GRAPH_MODE=piecewise
+      - TRINITY_TURBO_ENABLED=0
+    volumes:
+      - /media/tonoken/Optane_DATA/Models/huihui-ai/Huihui-Qwopus3.5-27B-v3-abliterated-NVFP4:/models/current:ro
+    ports:
+      - "8017:8017"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["1"]
+              capabilities: [gpu]
+    shm_size: '16gb'
+
+  bench-gemma31:
+    image: lna-lab/gemma4-inference:latest
+    container_name: bench-gemma31
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=2
+      - MODEL_PATH=/models/current
+      - PORT=8018
+      - MAX_MODEL_LEN=8192
+      - MAX_NUM_SEQS=4
+      - GPU_MEMORY_UTILIZATION=0.90
+      - TENSOR_PARALLEL_SIZE=1
+      - QUANTIZATION=auto
+      - VLLM_CUDA_GRAPH_MODE=piecewise
+      - TRINITY_TURBO_ENABLED=0
+    volumes:
+      - /media/tonoken/Optane_DATA/Models/huihui-ai/Huihui-gemma-4-31B-it-abliterated-v2-NVFP4:/models/current:ro
+    ports:
+      - "8018:8018"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["2"]
+              capabilities: [gpu]
+    shm_size: '16gb'
+
+  bench-gemma31-lyf:
+    image: lna-lab/gemma4-inference:latest
+    container_name: bench-gemma31-lyf
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=3
+      - MODEL_PATH=/models/current
+      - PORT=8019
+      - MAX_MODEL_LEN=8192
+      - MAX_NUM_SEQS=4
+      - GPU_MEMORY_UTILIZATION=0.90
+      - TENSOR_PARALLEL_SIZE=1
+      - QUANTIZATION=auto
+      - VLLM_CUDA_GRAPH_MODE=piecewise
+      - TRINITY_TURBO_ENABLED=0
+    volumes:
+      - /media/tonoken/Optane_DATA/Models/lyf/Huihui-gemma-4-31B-it-abliterated-v2-NVFP4:/models/current:ro
+    ports:
+      - "8019:8019"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["3"]
+              capabilities: [gpu]
+    shm_size: '16gb'
